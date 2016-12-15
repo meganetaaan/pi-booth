@@ -2,20 +2,19 @@ const Express = require('express')
 const RaspiCam = require('raspicam')
 
 const app = Express()
-const port = 8000
+const port = 3000
 
 app.get('/', (req, res) => {
   const path = Date.now().toString()
   const cam = new RaspiCam({
     mode: 'photo',
-    output: `img/${path}.jpg`
+    output: `img/${path}.jpg`,
+    rot: 180
   })
   cam.start()
   cam.on('read', (err, timestamp, filename) => {
-    cam.stop()
-    if (err != null) {
-      res.status(500).json(err)
-    } else {
+    if (filename[filename.length - 1] !== '~') {
+      cam.stop()
       res.json({filename})
     }
   })
